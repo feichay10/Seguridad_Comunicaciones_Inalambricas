@@ -1,0 +1,529 @@
+\documentclass[11pt]{report}
+
+% Paquetes y configuraciones adicionales
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{wasysym}
+\usepackage{tikzsymbols}
+\usepackage{fancyvrb}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}   % en el preámbulo
+\usepackage{array}      % para >{\raggedright}p{...}
+\usepackage{seqsplit}  % permite partir cadenas largas dentro de la tabla
+
+
+\usepackage[spanish]{babel}
+
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}
+}
+
+% Configura los márgenes
+\geometry{
+  left=2cm,   % Ajusta este valor al margen izquierdo deseado
+  right=2cm,  % Ajusta este valor al margen derecho deseado
+  top=3cm,
+  bottom=3cm,
+}
+
+% Configuración de los títulos de las secciones
+\titlespacing{\section}{0pt}{\parskip}{\parskip}
+\titlespacing{\subsection}{0pt}{\parskip}{\parskip}
+\titlespacing{\subsubsection}{0pt}{\parskip}{\parskip}
+
+% Redefinir el formato de los capítulos y añadir un punto después del número
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{0\p@} % Ajusta este valor para el espaciado deseado antes del título del capítulo
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \thechapter.\ % Añade un punto después del número
+    \fi
+    \interlinepenalty\@M
+    #1\par\nobreak
+    \vspace{10pt} % Ajusta este valor para el espacio deseado después del título del capítulo
+  }}
+\makeatother
+
+% Configura para que cada \chapter no comience en una pagina nueva
+\makeatletter
+\renewcommand\chapter{\@startsection{chapter}{0}{\z@}%
+    {-3.5ex \@plus -1ex \@minus -.2ex}%
+    {2.3ex \@plus.2ex}%
+    {\normalfont\Large\bfseries}}
+\makeatother
+
+% Configurar los colores para el código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Configurar el estilo para el código
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+% \renewcommand{\thechapter}{\alph{chapter}}
+
+%==============================================================================
+% Cosas para la documentación LateX
+% % Sangría
+% \setlength{\parindent}{1em}Texto
+
+% % Quitar sangría
+% \noindent
+
+% % Punto
+% \CIRCLE \ \ \textbf{Texto} \emph{algo}
+% \begin{itemize}
+%   \item \textbf{Negrita:} Texto
+%   \item \textbf{Negrita:} Texto
+% \end{itemize}
+
+% % Introducir código
+% \begin{center}
+%   \begin{BVerbatim}
+%     ... Código
+%   \end{BVerbatim}
+% \end{center}
+
+% Poner una imagen
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.55]{img/}
+%   \caption{Exportación de la base de datos en formato sql}
+%   \label{fig:exportación de la base de datos en formato sql}
+% \end{figure}
+
+% Poner dos imágenes
+% \begin{figure}[H]
+%   \begin{subfigure}{0.5\textwidth}
+%     \centering
+%     \includegraphics[scale=0.45]{img/}
+%     \caption{Texto imagen 1}
+%   \end{subfigure}%
+%   \begin{subfigure}{0.5\textwidth}
+%     \centering
+%     \includegraphics[scale=0.45]{img/}
+%     \caption{Texto imagen 2}
+%   \end{subfigure}
+%   \caption{Texto general}
+% \end{figure}
+
+% % Poner una tabla
+% \begin{table}[H]
+%   \centering
+%   \begin{tabular}{|c|c|c|c|}
+%     \hline
+%     \textbf{Campo 1} & \textbf{Campo 2} & \textbf{Campo 3} & \textbf{Campo 4} \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%   \end{tabular}
+%   \caption{Nombre de la tabla}
+%   \label{tab:nombre de la tabla}
+% \end{table}
+
+% % Poner codigo de un lenguaje a partir de un archivo
+% \lstset{style=mystyle}
+% The next code will be directly imported from a file
+% \lstinputlisting[language=Python]{code.py}
+
+% “Texto entre comillas dobles”
+
+%==============================================================================
+
+\begin{document}
+
+% Portada del informe
+\begin{titlepage}
+	\begin{center}
+		\includegraphics[scale=0.5]{img/logo.png}
+		\vspace{1cm}
+
+		\vspace{2cm}
+		\begin{Huge}
+			\textbf{Práctica 1: Ataque por denegación de servicios}
+		\end{Huge}
+
+		\vspace{1cm}
+		\begin{large}
+			\textbf{Seguridad de las comunicaciones por Internet}
+		\end{large}
+
+		\vspace{4cm}
+		\begin{large}
+			\textbf{Autor:} Cheuk Kelly Ng Pante (alu0101364544@ull.edu.es)
+		\end{large}
+
+		\vspace{1cm}
+		\begin{large}
+			\textbf{Fecha:} \today
+		\end{large}
+	\end{center}
+\end{titlepage}
+
+\pagestyle{empty} % Desactiva la numeración de página para el índice
+
+% Índice
+\tableofcontents
+
+% Nueva página
+\cleardoublepage
+
+\pagestyle{plain} % Vuelve a activar la numeración de página
+\setcounter{page}{1} % Reinicia el contador de página a 1
+
+% Secciones del informe
+% Capitulo 1
+\chapter{Análisis y Configuración de Interfaces de Red}
+
+\section{Objetivo}
+Arrancar la máquina virtual de Kali Linux y analizar las interfaces de red utilizando comandos modernos.
+
+\section{Desarrollo}
+\subsection{Inicio de sesión}
+Usuario: \texttt{kali}, Contraseña: \texttt{kali}
+
+\subsection{Comando principal}
+Ejecutar el comando para listar todas las interfaces de red:
+\begin{lstlisting}
+ip addr show
+\end{lstlisting}
+Forma abreviada: \texttt{ip a}
+
+\subsection{Enumeración de Interfaces}
+Para cada interfaz activa (eth0, lo, wlan0), documentar:
+
+\begin{itemize}
+    \item \textbf{Dirección MAC:} Valor \texttt{link/ether}
+    \item \textbf{Direcciones IP:} \texttt{inet} (IPv4) e \texttt{inet6} (IPv6)
+    \item \textbf{Dirección Broadcast:} Valor \texttt{brd}
+    \item \textbf{Estado:} \texttt{STATE UP} o \texttt{STATE DOWN}
+    \item \textbf{MTU:} Valor numérico \texttt{mtu}
+\end{itemize}
+
+\section{Resultados}
+\textit{[Aquí se deben incluir las capturas de pantalla y los datos obtenidos]}
+
+
+\chapter{Gesión del Estado de la Interfaz y Escalado de Privilegios}
+
+\section{Objetivo}
+Comprender cómo modificar el estado de las interfaces de red requiere privilegios elevados.
+
+\section{Desarrollo}
+
+\subsection{Intento sin privilegios}
+Intentar deshabilitar la interfaz eth0:
+\begin{lstlisting}
+ip link set eth0 down
+\end{lstlisting}
+\textit{Resultado esperado:} Error de permiso denegado.
+
+\subsection{Ejecución con privilegios}
+Ejecutar con \texttt{sudo}:
+\begin{lstlisting}
+sudo ip link set eth0 down
+\end{lstlisting}
+
+\subsection{Verificación de conectividad}
+Confirmar que la interfaz está inactiva:
+\begin{lstlisting}
+ip a
+\end{lstlisting}
+Intentar acceder a un sitio web para verificar pérdida de conectividad.
+
+\subsection{Reactivación}
+Restaurar la interfaz:
+\begin{lstlisting}
+sudo ip link set eth0 up
+\end{lstlisting}
+Validar la restauración con \texttt{ip a} y verificar conectividad a Internet.
+
+\subsection{Comandos adicionales}
+\begin{enumerate}
+    \item \textbf{Cambiar IP de eth0:}
+    \begin{lstlisting}
+sudo ip addr add 192.168.1.200/24 dev eth0
+    \end{lstlisting}
+    
+    \item \textbf{Asignar nueva máscara:} Se incluye en la notación CIDR (/24)
+    
+    \item \textbf{Configuración persistente:} Editar \texttt{/etc/network/interfaces}
+\end{enumerate}
+
+\section{Resultados}
+\textit{[Documentar los resultados obtenidos]}
+
+
+\chapter{Configuración de Direcciones IP Estáticas}
+
+\section{Objetivo}
+Comprender la diferencia entre configuración temporal y persistente.
+
+\section{Asignación Temporal}
+La configuración con \texttt{ip} es volátil:
+\begin{lstlisting}
+sudo ip addr add 192.168.1.200/24 dev eth0
+\end{lstlisting}
+Esta configuración se pierde al reiniciar.
+
+\section{Configuración Persistente}
+En sistemas Debian/Kali, editar el fichero \texttt{/etc/network/interfaces} para definir:
+\begin{itemize}
+    \item IP estática
+    \item Máscara de red
+    \item Puerta de enlace (gateway)
+\end{itemize}
+
+\textit{Nota: Este apartado es informativo y no requiere entrega.}
+
+
+\chapter{Verificación de la Pila TCP/IP y Conectividad Externa}
+
+\section{Objetivo}
+Validar la correcta inicialización de la pila TCP/IP local y la conectividad externa.
+
+\section{Desarrollo}
+
+\subsection{Prueba de Loopback}
+Ping a la interfaz de loopback:
+\begin{lstlisting}
+ping -c 4 127.0.0.1
+\end{lstlisting}
+
+\subsection{Prueba de Conectividad Externa}
+Verificar resolución DNS y conectividad WAN:
+\begin{lstlisting}
+ping -c 4 www.ull.es
+\end{lstlisting}
+
+\section{Análisis de Resultados}
+Documentar:
+\begin{enumerate}
+    \item \textbf{Estadísticas de paquetes:} Transmitidos, recibidos, pérdida
+    \item \textbf{RTT (Round-Trip Time):} Mínimo, promedio, máximo
+\end{enumerate}
+
+
+\chapter{Análisis de la Caché del Protocolo ARP}
+
+\section{Objetivo}
+Inspeccionar la traducción de direcciones IP a MAC en la LAN.
+
+\section{Desarrollo}
+
+\subsection{Comando tradicional}
+\begin{lstlisting}
+arp -a
+\end{lstlisting}
+
+\subsection{Alternativa moderna}
+Usando el comando \texttt{ip}:
+\begin{lstlisting}
+ip neigh
+\end{lstlisting}
+
+\section{Resultados}
+Anotar las entradas que mapean IP-MAC de dispositivos en la red, especialmente la puerta de enlace (router).
+
+
+\chapter{Inspección de la Tabla de Enrutamiento}
+
+\section{Objetivo}
+Analizar cómo el sistema decide dónde enviar el tráfico.
+
+\section{Desarrollo}
+Mostrar la tabla de enrutamiento:
+\begin{lstlisting}
+ip route show
+\end{lstlisting}
+Forma abreviada: \texttt{ip r}
+
+\section{Análisis}
+Identificar la ruta por defecto (\texttt{default via ...}) que indica la IP de la puerta de enlace.
+
+
+\chapter{Trazado de Ruta de Red (Traceroute)}
+
+\section{Objetivo}
+Determinar los saltos (routers intermedios) entre la máquina y un destino.
+
+\section{Desarrollo}
+Realizar trazados de ruta:
+\begin{lstlisting}
+traceroute www.ull.es
+traceroute www.net.berkeley.edu
+\end{lstlisting}
+
+\section{Resultados}
+Documentar:
+\begin{itemize}
+    \item Número total de saltos para cada destino
+    \item Latencia en cada nodo
+\end{itemize}
+
+
+\chapter{Escaneo de Puertos Locales con Nmap}
+
+\section{Objetivo}
+Identificar puertos que están escuchando y servicios asociados en la máquina local.
+
+\section{Desarrollo}
+Escaneo con detección de versión:
+\begin{lstlisting}
+nmap -sV localhost
+\end{lstlisting}
+
+El flag \texttt{-sV} intenta determinar la versión del servicio.
+
+\section{Análisis}
+Esto simula un reconocimiento inicial desde la perspectiva de un atacante en la misma red.
+
+
+\chapter{Análisis de Sockets y Conexiones de Red}
+
+\section{Objetivo}
+Enumerar conexiones activas y puertos abiertos.
+
+\section{Desarrollo}
+
+\subsection{Comando tradicional}
+\begin{lstlisting}
+netstat -tulpn
+\end{lstlisting}
+
+\subsection{Herramienta moderna}
+Usando \texttt{ss} (socket statistics):
+\begin{lstlisting}
+ss -tulpn
+\end{lstlisting}
+
+\section{Análisis}
+Buscar puertos abiertos inesperados o conexiones remotas \texttt{ESTABLISHED} sospechosas.
+
+
+\chapter{Resolución de Nombres DNS (NSLookup)}
+
+\section{Objetivo}
+Realizar consultas DNS para resolver nombres de dominio.
+
+\section{Desarrollo}
+Consultas con \texttt{nslookup}:
+\begin{lstlisting}
+nslookup www.ull.es
+nslookup www.w3c.org
+\end{lstlisting}
+
+\section{Documentación}
+Identificar y documentar:
+\begin{itemize}
+    \item Servidor DNS que resuelve la consulta (indicado como \texttt{Server})
+    \item Registros A (IPv4) resueltos para cada dominio
+\end{itemize}
+
+
+\chapter{Interacción de Red con Netcat (nc)}
+
+\section{Objetivo}
+Comprender el uso de Netcat para depuración y explotación de redes.
+
+\section{Desarrollo}
+
+\subsection{Revisión de opciones}
+\begin{lstlisting}
+nc -h
+\end{lstlisting}
+
+\subsection{Sintaxis clave}
+\begin{enumerate}
+    \item \textbf{Modo Escucha (Listener):}
+    \begin{lstlisting}
+nc -l -p 1234
+    \end{lstlisting}
+    
+    \item \textbf{Modo Cliente:}
+    \begin{lstlisting}
+nc <IP_remota> <puerto>
+    \end{lstlisting}
+\end{enumerate}
+
+
+\chapter{Reconocimiento DNS Avanzado con dnsenum}
+
+\section{Objetivo}
+Recopilar inteligencia de fuentes abiertas (OSINT) sobre un dominio.
+
+\section{Desarrollo}
+Ejecutar \texttt{dnsenum}:
+\begin{lstlisting}
+dnsenum tecnomobile.com
+\end{lstlisting}
+
+\section{Análisis}
+Extraer información clave:
+\begin{enumerate}
+    \item Registros de Host (A/AAAA)
+    \item Servidores de Nombres (NS)
+    \item Servidores de Correo (MX)
+    \item Sub-enumeración de subdominios
+\end{enumerate}
+
+
+\chapter{Análisis de Tráfico en Terminal con tcpdump}
+
+\section{Objetivo}
+Analizar paquetes de red en línea de comandos.
+
+\section{Desarrollo}
+Captura básica (requiere privilegios):
+\begin{lstlisting}
+sudo tcpdump -i eth0 -n -c 20
+\end{lstlisting}
+
+\subsection{Explicación de flags}
+\begin{itemize}
+    \item \texttt{-i eth0}: Escucha en la interfaz eth0
+    \item \texttt{-n}: No resuelve nombres DNS/IPs
+    \item \texttt{-c 20}: Captura 20 paquetes y se detiene
+\end{itemize}
+
+\section{Observaciones}
+Observar el flujo de tráfico en tiempo real y documentar los datos relevantes.
+
+
+\end{document}
