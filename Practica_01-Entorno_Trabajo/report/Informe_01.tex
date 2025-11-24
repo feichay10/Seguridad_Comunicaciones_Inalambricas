@@ -242,11 +242,25 @@ ip link set eth0 down
 \end{lstlisting}
 \textit{Resultado esperado:} Error de permiso denegado.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_2.png}
+  \caption{Error al intentar deshabilitar eth0 sin privilegios}
+  \label{fig:error_sin_privilegios}
+\end{figure}
+
 \section{Ejecución con privilegios}
 Ejecutar con \texttt{sudo}:
 \begin{lstlisting}
 sudo ip link set eth0 down
 \end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_3.png}
+  \caption{Deshabilitación exitosa de eth0 con privilegios}
+  \label{fig:deshabilitacion_exitosa}
+\end{figure}
 
 \section{Verificación de conectividad}
 Confirmar que la interfaz está inactiva:
@@ -255,6 +269,13 @@ ip a
 \end{lstlisting}
 Intentar acceder a un sitio web para verificar pérdida de conectividad.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_4.png}
+  \caption{Verificación de estado inactivo de eth0}
+  \label{fig:verificacion_inactivo}
+\end{figure}
+
 \section{Reactivación}
 Restaurar la interfaz:
 \begin{lstlisting}
@@ -262,70 +283,83 @@ sudo ip link set eth0 up
 \end{lstlisting}
 Validar la restauración con \texttt{ip a} y verificar conectividad a Internet.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_5.png}
+  \caption{Reactivación exitosa de eth0}
+  \label{fig:reactivacion_exitosa}
+\end{figure}
+
 \subsection{Comandos adicionales}
-\begin{enumerate}
-    \item \textbf{Cambiar IP de eth0:}
-    \begin{lstlisting}
-sudo ip addr add 192.168.1.200/24 dev eth0
-    \end{lstlisting}
-    
-    \item \textbf{Asignar nueva máscara:} Se incluye en la notación CIDR (/24)
-    
-    \item \textbf{Configuración persistente:} Editar \texttt{/etc/network/interfaces}
-\end{enumerate}
-
-\section{Resultados}
-\textit{[Documentar los resultados obtenidos]}
-
-
-\chapter{Configuración de Direcciones IP Estáticas}
-
-\section{Objetivo}
-Comprender la diferencia entre configuración temporal y persistente.
-
-\section{Asignación Temporal}
-La configuración con \texttt{ip} es volátil:
 \begin{lstlisting}
 sudo ip addr add 192.168.1.200/24 dev eth0
 \end{lstlisting}
-Esta configuración se pierde al reiniciar.
 
-\section{Configuración Persistente}
-En sistemas Debian/Kali, editar el fichero \texttt{/etc/network/interfaces} para definir:
-\begin{itemize}
-    \item IP estática
-    \item Máscara de red
-    \item Puerta de enlace (gateway)
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{img/Screenshot_6.png}
+    \caption{Asignación temporal de nueva IP a eth0}
+    \label{fig:nueva_ip_eth0}
+\end{figure}
 
-\textit{Nota: Este apartado es informativo y no requiere entrega.}
+Al hacer esto el cambio es temporal y se pierde al reiniciar. Para hacerlo persistente hay que editar el fichero \texttt{/etc/network/interfaces}.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{img/Screenshot_7.png}
+    \caption{Verificación de nueva IP asignada a eth0}
+    \label{fig:verificacion_nueva_ip}
+\end{figure}
 
 \chapter{Verificación de la Pila TCP/IP y Conectividad Externa}
-
-\section{Objetivo}
-Validar la correcta inicialización de la pila TCP/IP local y la conectividad externa.
-
-\section{Desarrollo}
-
-\subsection{Prueba de Loopback}
+\section{Prueba de Loopback}
 Ping a la interfaz de loopback:
 \begin{lstlisting}
 ping -c 4 127.0.0.1
 \end{lstlisting}
 
-\subsection{Prueba de Conectividad Externa}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_8.png}
+  \caption{Prueba de conectividad a loopback}
+  \label{fig:ping_loopback}
+\end{figure}
+
+\section{Prueba de Conectividad Externa}
 Verificar resolución DNS y conectividad WAN:
 \begin{lstlisting}
 ping -c 4 www.ull.es
 \end{lstlisting}
 
-\section{Análisis de Resultados}
-Documentar:
-\begin{enumerate}
-    \item \textbf{Estadísticas de paquetes:} Transmitidos, recibidos, pérdida
-    \item \textbf{RTT (Round-Trip Time):} Mínimo, promedio, máximo
-\end{enumerate}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_9.png}
+  \caption{Prueba de conectividad a www.ull.es}
+  \label{fig:ping_ull}
+\end{figure}
+
+A continuación se documentan los resultados obtenidos tras ejecutar el comando de diagnóstico de red hacia el dominio de la Universidad de La Laguna.
+
+\paragraph{a. Estadísticas de Paquetes}
+Basado en la línea final: \textit{4 packets transmitted, 0 received, 100\% packet loss}.
+
+\begin{itemize}
+    \item \textbf{Transmitidos:} 4
+    \item \textbf{Recibidos:} 0
+    \item \textbf{Pérdida (\%):} 100\%
+\end{itemize}
+
+\paragraph{b. Estadísticas de RTT (Round-Trip Time)}
+Debido a que la pérdida de paquetes fue total (ningún paquete retornó), el sistema no pudo calcular los tiempos de viaje.
+
+\begin{itemize}
+    \item \textbf{Mínimo:} N/A (No disponible)
+    \item \textbf{Promedio (Avg):} N/A (No disponible)
+    \item \textbf{Máximo:} N/A (No disponible)
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent \textbf{Observación:} El fallo en la recepción de paquetes (100\% de pérdida) sugiere que el host destino (\texttt{193.145.100.5}) está inactivo o, lo más probable, que existe un firewall bloqueando las solicitudes ICMP.
 
 
 \chapter{Análisis de la Caché del Protocolo ARP}
