@@ -176,12 +176,12 @@
 
 		\vspace{2cm}
 		\begin{Huge}
-			\textbf{Práctica 1: Ataque por denegación de servicios}
+			\textbf{Práctica 1: Entorno de trabajo auditoría de redes inalámbricas}
 		\end{Huge}
 
 		\vspace{1cm}
 		\begin{large}
-			\textbf{Seguridad de las comunicaciones por Internet}
+			\textbf{Seguridad de las Comunicaciones Inalámbricas}
 		\end{large}
 
 		\vspace{4cm}
@@ -211,7 +211,7 @@
 % Capitulo 1
 \chapter{Análisis y Configuración de Interfaces de Red}
 Ejecutar el comando para listar todas las interfaces de red:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ip addr show
 \end{lstlisting}
 Forma abreviada: \texttt{ip a}
@@ -229,15 +229,17 @@ Para cada interfaz activa (eth0, lo, wlan0), documentar:
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.6]{img/Screenshot_1.png}
+  \includegraphics[scale=0.45]{img/Screenshot_1.png}
   \caption{Salida del comando \texttt{ip addr show}}
   \label{fig:ip_addr_show}
 \end{figure}
 
+\newpage
+
 \chapter{Gesión del Estado de la Interfaz y Escalado de Privilegios}
 \section{Intento sin privilegios}
 Intentar deshabilitar la interfaz eth0:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ip link set eth0 down
 \end{lstlisting}
 \textit{Resultado esperado:} Error de permiso denegado.
@@ -251,7 +253,7 @@ ip link set eth0 down
 
 \section{Ejecución con privilegios}
 Ejecutar con \texttt{sudo}:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 sudo ip link set eth0 down
 \end{lstlisting}
 
@@ -262,42 +264,50 @@ sudo ip link set eth0 down
   \label{fig:deshabilitacion_exitosa}
 \end{figure}
 
+\newpage
+
 \section{Verificación de conectividad}
 Confirmar que la interfaz está inactiva:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ip a
 \end{lstlisting}
-Intentar acceder a un sitio web para verificar pérdida de conectividad.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.6]{img/Screenshot_4.png}
+  \includegraphics[scale=0.35]{img/Screenshot_4.png}
   \caption{Verificación de estado inactivo de eth0}
   \label{fig:verificacion_inactivo}
 \end{figure}
 
+Al acceder a alguna página web podemos ver que se ha perdido la conexion:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.3]{img/Screenshot_4_1.png}
+  \caption{Perdida de conexion}
+\end{figure}
+
 \section{Reactivación}
 Restaurar la interfaz:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 sudo ip link set eth0 up
 \end{lstlisting}
 Validar la restauración con \texttt{ip a} y verificar conectividad a Internet.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.6]{img/Screenshot_5.png}
+  \includegraphics[scale=0.45]{img/Screenshot_5.png}
   \caption{Reactivación exitosa de eth0}
   \label{fig:reactivacion_exitosa}
 \end{figure}
 
 \subsection{Comandos adicionales}
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 sudo ip addr add 192.168.1.200/24 dev eth0
 \end{lstlisting}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.6]{img/Screenshot_6.png}
+    \includegraphics[scale=0.45]{img/Screenshot_6.png}
     \caption{Asignación temporal de nueva IP a eth0}
     \label{fig:nueva_ip_eth0}
 \end{figure}
@@ -306,7 +316,7 @@ Al hacer esto el cambio es temporal y se pierde al reiniciar. Para hacerlo persi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.6]{img/Screenshot_7.png}
+    \includegraphics[scale=0.45]{img/Screenshot_7.png}
     \caption{Verificación de nueva IP asignada a eth0}
     \label{fig:verificacion_nueva_ip}
 \end{figure}
@@ -314,26 +324,28 @@ Al hacer esto el cambio es temporal y se pierde al reiniciar. Para hacerlo persi
 \chapter{Verificación de la Pila TCP/IP y Conectividad Externa}
 \section{Prueba de Loopback}
 Ping a la interfaz de loopback:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ping -c 4 127.0.0.1
 \end{lstlisting}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.6]{img/Screenshot_8.png}
+  \includegraphics[scale=0.55]{img/Screenshot_8.png}
   \caption{Prueba de conectividad a loopback}
   \label{fig:ping_loopback}
 \end{figure}
 
+\newpage
+
 \section{Prueba de Conectividad Externa}
 Verificar resolución DNS y conectividad WAN:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ping -c 4 www.ull.es
 \end{lstlisting}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.6]{img/Screenshot_9.png}
+  \includegraphics[scale=0.55]{img/Screenshot_9.png}
   \caption{Prueba de conectividad a www.ull.es}
   \label{fig:ping_ull}
 \end{figure}
@@ -363,26 +375,27 @@ Debido a que la pérdida de paquetes fue total (ningún paquete retornó), el si
 
 
 \chapter{Análisis de la Caché del Protocolo ARP}
-Inspeccionar la traducción de direcciones IP a MAC en la LAN.
+Al realizar la práctica en Ubuntu 22.04, se observó que el comando clásico arp -a no está disponible por defecto, ya que pertenece al paquete obsoleto net-tools. Por este motivo, se utiliza la suite moderna iproute2, donde el comando ip neigh (abreviatura de ip neighbor) permite consultar y gestionar la tabla de vecinos, que para IPv4 corresponde a la caché ARP.
 
-\subsection{Comando tradicional}
-\begin{lstlisting}
-arp -a
-\end{lstlisting}
+En consecuencia, en este informe se emplea el comando ip neigh show como alternativa directa a arp -a para inspeccionar el mapeo entre direcciones IP y direcciones MAC de los dispositivos de la red, incluida la puerta de enlace.
 
-\subsection{Alternativa moderna}
-Usando el comando \texttt{ip}:
-\begin{lstlisting}
+\newpage
+
+El comando utilizado es:
+\begin{lstlisting}[style=mystyle]
 ip neigh
 \end{lstlisting}
 
-\section{Resultados}
-Anotar las entradas que mapean IP-MAC de dispositivos en la red, especialmente la puerta de enlace (router).
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.55]{img/Screenshot_10.png}
+  \caption{Salida del comando \texttt{ip neigh}}
+  \label{fig:ip_neigh}
+\end{figure}
 
 \chapter{Inspección de la Tabla de Enrutamiento}
 Analizar cómo el sistema decide dónde enviar el tráfico. Para mostrar la tabla de enrutamiento:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ip route show
 \end{lstlisting}
 Forma abreviada: \texttt{ip r}
@@ -398,7 +411,7 @@ Determinar los saltos (routers intermedios) entre la máquina y un destino.
 
 \section{Desarrollo}
 Realizar trazados de ruta:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 traceroute www.ull.es
 traceroute www.net.berkeley.edu
 \end{lstlisting}
@@ -418,7 +431,7 @@ Identificar puertos que están escuchando y servicios asociados en la máquina l
 
 \section{Desarrollo}
 Escaneo con detección de versión:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 nmap -sV localhost
 \end{lstlisting}
 
@@ -436,13 +449,13 @@ Enumerar conexiones activas y puertos abiertos.
 \section{Desarrollo}
 
 \subsection{Comando tradicional}
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 netstat -tulpn
 \end{lstlisting}
 
 \subsection{Herramienta moderna}
 Usando \texttt{ss} (socket statistics):
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 ss -tulpn
 \end{lstlisting}
 
@@ -457,7 +470,7 @@ Realizar consultas DNS para resolver nombres de dominio.
 
 \section{Desarrollo}
 Consultas con \texttt{nslookup}:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 nslookup www.ull.es
 nslookup www.w3c.org
 \end{lstlisting}
@@ -478,19 +491,19 @@ Comprender el uso de Netcat para depuración y explotación de redes.
 \section{Desarrollo}
 
 \subsection{Revisión de opciones}
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 nc -h
 \end{lstlisting}
 
 \subsection{Sintaxis clave}
 \begin{enumerate}
     \item \textbf{Modo Escucha (Listener):}
-    \begin{lstlisting}
+    \begin{lstlisting}[style=mystyle]
 nc -l -p 1234
     \end{lstlisting}
     
     \item \textbf{Modo Cliente:}
-    \begin{lstlisting}
+    \begin{lstlisting}[style=mystyle]
 nc <IP_remota> <puerto>
     \end{lstlisting}
 \end{enumerate}
@@ -503,7 +516,7 @@ Recopilar inteligencia de fuentes abiertas (OSINT) sobre un dominio.
 
 \section{Desarrollo}
 Ejecutar \texttt{dnsenum}:
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 dnsenum tecnomobile.com
 \end{lstlisting}
 
@@ -524,7 +537,7 @@ Analizar paquetes de red en línea de comandos.
 
 \section{Desarrollo}
 Captura básica (requiere privilegios):
-\begin{lstlisting}
+\begin{lstlisting}[style=mystyle]
 sudo tcpdump -i eth0 -n -c 20
 \end{lstlisting}
 
