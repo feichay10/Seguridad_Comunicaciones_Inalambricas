@@ -312,7 +312,7 @@ sudo ip addr add 192.168.1.200/24 dev eth0
     \label{fig:nueva_ip_eth0}
 \end{figure}
 
-Al hacer esto el cambio es temporal y se pierde al reiniciar. Para hacerlo persistente hay que editar el fichero \texttt{/etc/network/interfaces}.
+Al hacer esto el cambio es temporal y se pierde al reiniciar. Para hacerlo persistente hay que editar el fichero \texttt{/etc/netplan/01-network-manager-all.yaml}.
 
 \begin{figure}[H]
     \centering
@@ -400,156 +400,149 @@ ip route show
 \end{lstlisting}
 Forma abreviada: \texttt{ip r}
 
-\section{Análisis}
-Identificar la ruta por defecto (\texttt{default via ...}) que indica la IP de la puerta de enlace.
+En la salida del comando ip route show se observan dos rutas por defecto configuradas en la interfaz \texttt{enp27s0}. Estas rutas apuntan a dos puertas de enlace distintas, \texttt{192.168.1.1} (configurada de forma estática) y \texttt{192.168.0.1} (obtenida por DHCP), ambas con la misma métrica (20100), por lo que el kernel puede utilizar cualquiera de ellas como \emph{default gateway} en función de su disponibilidad.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.55]{img/Screenshot_11.png}
+  \caption{Salida del comando \texttt{ip route show}}
+  \label{fig:ip_route_show}
+\end{figure}
 
 \chapter{Trazado de Ruta de Red (Traceroute)}
-
-\section{Objetivo}
-Determinar los saltos (routers intermedios) entre la máquina y un destino.
-
-\section{Desarrollo}
-Realizar trazados de ruta:
+Los trazados de ruta realizados son:
 \begin{lstlisting}[style=mystyle]
 traceroute www.ull.es
 traceroute www.net.berkeley.edu
 \end{lstlisting}
 
-\section{Resultados}
-Documentar:
-\begin{itemize}
-    \item Número total de saltos para cada destino
-    \item Latencia en cada nodo
-\end{itemize}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.55]{img/Screenshot_12.png}
+%   \caption{Trazado de ruta a www.ull.es}
+%   \label{fig:traceroute_ull}
+% \end{figure}
 
+\begin{figure}[H]
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[scale=0.35]{img/Screenshot_12_1.png}
+    \caption{Trazado de ruta a www.ull.es}
+  \end{subfigure}%
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[scale=0.35]{img/Screenshot_12_2.png}
+    \caption{Trazado de ruta a www.net.berkeley.edu}
+  \end{subfigure}
+  \caption{Trazados de ruta a dos destinos diferentes}
+\end{figure}
+
+Al realizar la práctica en Ubuntu 22.04 se ejecutó el comando \texttt{traceroute} hacia dos destinos: \texttt{www.net.berkeley.edu} y \texttt{www.ull.es}, con el objetivo de identificar los routers intermedios y la latencia asociada a cada salto de Capa~3. En el caso de \texttt{www.net.berkeley.edu}, el trazado muestra un total de 14 saltos desde la puerta de enlace local (\texttt{192.168.0.1}), con un tiempo de ida y vuelta inicial de aproximadamente 3~ms y latencias que aumentan progresivamente hasta valores cercanos a 170--180~ms en el destino final, lo que refleja la distancia geográfica y el número de dominios de red atravesados.
+
+Para \texttt{www.ull.es}, el traceroute alcanza la puerta de enlace local y varios routers pertenecientes a la red académica (por ejemplo, nodos de RedIRIS), con latencias en torno a 30--60~ms. A partir de cierto punto, numerosos saltos aparecen como \texttt{* * *}, lo que indica que esos routers no responden a las sondas de \texttt{traceroute} (por filtrado o limitación de tráfico ICMP), aun cuando la conectividad con el destino sigue siendo funcional.
 
 \chapter{Escaneo de Puertos Locales con Nmap}
+Para realizar el auto-descubrimiento de servicios se ejecutó un escaneo con \texttt{nmap} sobre la propia máquina (\texttt{nmap -sV localhost}). Este comando permite identificar qué puertos TCP se encuentran en estado \emph{LISTEN} y, además, intenta determinar la versión de los servicios asociados mediante el flag \texttt{-sV}, lo que simula un reconocimiento inicial desde la perspectiva de un atacante situado en la misma red local.
 
-\section{Objetivo}
-Identificar puertos que están escuchando y servicios asociados en la máquina local.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.45]{img/Screenshot_13.png}
+  \caption{Salida del comando \texttt{nmap -sV localhost}}
+  \label{fig:nmap_localhost}
+\end{figure}
 
-\section{Desarrollo}
-Escaneo con detección de versión:
-\begin{lstlisting}[style=mystyle]
-nmap -sV localhost
-\end{lstlisting}
-
-El flag \texttt{-sV} intenta determinar la versión del servicio.
-
-\section{Análisis}
-Esto simula un reconocimiento inicial desde la perspectiva de un atacante en la misma red.
-
+Al ejecutar el comando \texttt{nmap -sV localhost} sobre la propia máquina, se comprobó que el host \texttt{localhost} (\texttt{127.0.0.1}) está activo y responde con una latencia muy baja. El escaneo analiza los 1000 puertos TCP más habituales y muestra que 999 de ellos se encuentran cerrados, detectándose únicamente un puerto abierto: el \texttt{631/tcp}, asociado al servicio \texttt{ipp} (Internet Printing Protocol), que en este caso corresponde a \texttt{CUPS 2.4}, es decir, el subsistema de impresión del sistema operativo escuchando en la interfaz de \emph{loopback}.
 
 \chapter{Análisis de Sockets y Conexiones de Red}
-
-\section{Objetivo}
-Enumerar conexiones activas y puertos abiertos.
-
-\section{Desarrollo}
-
-\subsection{Comando tradicional}
+Para inspeccionar los sockets y conexiones de red activas en el sistema, se utilizó el comando \texttt{ss} (socket statistics), que forma parte de la suite \texttt{iproute2} y ofrece una visión detallada de las conexiones TCP, UDP y otros tipos de sockets.
 \begin{lstlisting}[style=mystyle]
-netstat -tulpn
+ss -tuln
 \end{lstlisting}
 
-\subsection{Herramienta moderna}
-Usando \texttt{ss} (socket statistics):
-\begin{lstlisting}[style=mystyle]
-ss -tulpn
-\end{lstlisting}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.45]{img/Screenshot_14.png}
+  \caption{Salida del comando \texttt{ss -tuln}}
+  \label{fig:ss_tuln}
+\end{figure}
 
-\section{Análisis}
-Buscar puertos abiertos inesperados o conexiones remotas \texttt{ESTABLISHED} sospechosas.
+Al ejecutar el comando \texttt{ss -tuln} se obtuvo un listado de los sockets UDP y TCP abiertos en el sistema, incluyendo su estado y la dirección/puerto local asociados. En la parte UDP, los sockets aparecen en estado \texttt{UNCONN}, con varios puertos \texttt{53} y \texttt{5353} escuchando en direcciones como \texttt{127.0.0.53\%lo}, \texttt{192.168.122.1} y \texttt{0.0.0.0}, lo que indica la presencia de servicios de resolución de nombres (DNS) y de descubrimiento en la red local, así como un servidor DHCP vinculado a la interfaz virtual \texttt{virbr0}.
 
+En la sección TCP, los sockets se muestran en estado \texttt{LISTEN}, destacando que la mayoría de servicios están restringidos a la interfaz de \emph{loopback} (por ejemplo, \texttt{127.0.0.53\%lo:53}, \texttt{127.0.0.1:631} y \texttt{[::1]:631}, correspondientes a servicios de DNS local y CUPS), mientras que otros puertos como \texttt{192.168.122.1:53} sólo son accesibles desde la red virtual interna. En conjunto, la salida evidencia que los servicios expuestos hacia el exterior son mínimos y que los puertos más sensibles se limitan a la propia máquina o a redes virtuales controladas.
 
 \chapter{Resolución de Nombres DNS (NSLookup)}
 
 \section{Objetivo}
-Realizar consultas DNS para resolver nombres de dominio.
+Realizar consultas DNS para resolver nombres de dominio a \texttt{www.ull.es} y \texttt{www.w3c.org} se utilizaron consultas DNS mediante \texttt{nslookup}. En ambos casos se identificó el servidor DNS que resolvió la consulta (línea \texttt{Server:}) y se registraron las direcciones IPv4 devueltas como registros de tipo A para cada dominio.
 
-\section{Desarrollo}
-Consultas con \texttt{nslookup}:
-\begin{lstlisting}[style=mystyle]
-nslookup www.ull.es
-nslookup www.w3c.org
-\end{lstlisting}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.7]{img/Screenshot_15.png}
+  \caption{Salida del comando \texttt{nslookup <dominio>}}
+  \label{fig:nslookup}
+\end{figure}
 
-\section{Documentación}
-Identificar y documentar:
-\begin{itemize}
-    \item Servidor DNS que resuelve la consulta (indicado como \texttt{Server})
-    \item Registros A (IPv4) resueltos para cada dominio
-\end{itemize}
+En las consultas DNS realizadas con \texttt{nslookup} para \texttt{www.ull.es} y \texttt{www.w3c.org}, el servidor que resuelve ambas peticiones es \texttt{127.0.0.53}, es decir, el resolvedor local de Ubuntu que actúa como caché y reenvía las consultas a los DNS configurados en el sistema.
 
+Para \texttt{www.ull.es}, la respuesta incluye un nombre canónico \texttt{w4.stic.ull.es} y un registro A con la dirección IPv4 \texttt{193.145.100.5}. Para \texttt{www.w3c.org}, el nombre canónico resuelto es \texttt{webredir.vip.gandi.net} y el registro A obtenido es la dirección IPv4 \texttt{217.70.184.50}
 
 \chapter{Interacción de Red con Netcat (nc)}
+Se utilizó Netcat (\texttt{nc}) como herramienta de depuración de red. En modo escucha se empleó la sintaxis \texttt{nc -l -p 1234} para iniciar un servicio que acepta conexiones entrantes en el puerto 1234. En modo cliente se utilizó \texttt{nc <host> 1234} para establecer una conexión TCP hacia dicho puerto remoto y verificar el intercambio de datos extremo a extremo.
 
-\section{Objetivo}
-Comprender el uso de Netcat para depuración y explotación de redes.
+\newpage
 
-\section{Desarrollo}
-
-\subsection{Revisión de opciones}
+\section{Sintaxis clave}
+\textbf{Modo Escucha (Listener):}
 \begin{lstlisting}[style=mystyle]
-nc -h
+nc -l -p 1234
 \end{lstlisting}
 
-\subsection{Sintaxis clave}
-\begin{enumerate}
-    \item \textbf{Modo Escucha (Listener):}
-    \begin{lstlisting}[style=mystyle]
-nc -l -p 1234
-    \end{lstlisting}
-    
-    \item \textbf{Modo Cliente:}
-    \begin{lstlisting}[style=mystyle]
-nc <IP_remota> <puerto>
-    \end{lstlisting}
-\end{enumerate}
+\textbf{Modo Cliente:}
+\begin{lstlisting}[style=mystyle]
+nc [IP_remota] [puerto]
+\end{lstlisting}
 
+
+En la Figura~\ref{fig:netcat} se muestra la configuración de Netcat en modo escucha y cliente en dos terminales diferentes.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.7]{img/Screenshot_16.png}
+  \caption{Uso de Netcat en modo escucha y cliente}
+  \label{fig:netcat}
+\end{figure}
+
+Para probar la interacción de red con Netcat se lanzó un listener en la máquina local mediante \texttt{nc -l -p 1234} y, en una segunda terminal, un cliente con \texttt{nc 127.0.0.1 1234}. Una vez establecida la conexión, cualquier texto introducido en una de las terminales aparecía en la otra, demostrando que se había creado un canal TCP bidireccional entre cliente y servidor sobre el puerto 1234 de \texttt{localhost}, lo que simula el funcionamiento básico de un servicio y su cliente en la misma red.​
 
 \chapter{Reconocimiento DNS Avanzado con dnsenum}
+Se ejecutó \texttt{dnsenum tecnomobile.com} para realizar enumeración DNS automatizada del dominio, obteniendo direcciones de host (registros A/AAAA), servidores de nombres (NS), servidores de correo (MX) y, adicionalmente, posibles subdominios y rangos de red asociados descubiertos por fuerza bruta y consultas complementarias.
 
-\section{Objetivo}
-Recopilar inteligencia de fuentes abiertas (OSINT) sobre un dominio.
+\begin{figure}[H]
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[scale=0.4]{img/Screenshot_17_1.png}
+  \end{subfigure}%
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[scale=0.4]{img/Screenshot_17_2.png}
+  \end{subfigure}
+  \caption{Salida del comando \texttt{dnsenum tecnomobile.com}}
+\end{figure}
 
-\section{Desarrollo}
-Ejecutar \texttt{dnsenum}:
-\begin{lstlisting}[style=mystyle]
-dnsenum tecnomobile.com
-\end{lstlisting}
+Mediante la ejecución de \texttt{dnsenum tecnomobile.com} se identificó que el dominio principal \texttt{tecnomobile.com} dispone de un registro A asociado a la dirección IPv4 \texttt{37.48.77.81}. Asimismo, se detectaron como servidores de nombres (registros NS) los hosts \texttt{ns1.quokkadns.com} (\texttt{207.244.71.177}) y \texttt{ns2.quokkadns.com} (\texttt{5.79.65.14}). La herramienta no devolvió registros MX para el dominio, pero sí enumeró varios subdominios numéricos (por ejemplo, \texttt{1003.tecnomobile.com}, \texttt{1025.tecnomobile.com}, etc.) con distintas direcciones IPv4, lo que aporta información adicional sobre la infraestructura asociada al dominio.
 
-\section{Análisis}
-Extraer información clave:
-\begin{enumerate}
-    \item Registros de Host (A/AAAA)
-    \item Servidores de Nombres (NS)
-    \item Servidores de Correo (MX)
-    \item Sub-enumeración de subdominios
-\end{enumerate}
-
+\newpage
 
 \chapter{Análisis de Tráfico en Terminal con tcpdump}
+Se realizó una captura básica con \texttt{tcpdump} mediante el comando \texttt{sudo tcpdump -i enp27s0 -n -c 20}. En las primeras líneas se observa tráfico de resolución ARP dentro de la red local (petición para averiguar la MAC de \texttt{192.168.0.1} desde \texttt{192.168.0.37}), así como algún frame Ethernet de broadcast de tipo no identificado por la herramienta. A continuación aparecen múltiples paquetes IP entre la máquina local \texttt{192.168.0.200} y distintos servidores externos en el puerto \texttt{443}, tanto en UDP (probablemente tráfico QUIC) como en TCP, donde pueden verse flags de \emph{push} y \emph{finish} que indican el envío de datos de aplicaciones web y el cierre ordenado de las conexiones TLS.
 
-\section{Objetivo}
-Analizar paquetes de red en línea de comandos.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.55]{img/Screenshot_18.png}
+  \caption{Salida del comando \texttt{tcpdump}}
+  \label{fig:tcpdump}
+\end{figure}
 
-\section{Desarrollo}
-Captura básica (requiere privilegios):
-\begin{lstlisting}[style=mystyle]
-sudo tcpdump -i eth0 -n -c 20
-\end{lstlisting}
-
-\subsection{Explicación de flags}
-\begin{itemize}
-    \item \texttt{-i eth0}: Escucha en la interfaz eth0
-    \item \texttt{-n}: No resuelve nombres DNS/IPs
-    \item \texttt{-c 20}: Captura 20 paquetes y se detiene
-\end{itemize}
-
-\section{Observaciones}
-Observar el flujo de tráfico en tiempo real y documentar los datos relevantes.
 
 
 \end{document}
