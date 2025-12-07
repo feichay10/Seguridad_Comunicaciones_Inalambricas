@@ -1,0 +1,307 @@
+\documentclass[11pt]{report}
+
+% Paquetes y configuraciones adicionales
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{wasysym}
+\usepackage{tikzsymbols}
+\usepackage{fancyvrb}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}   % en el preámbulo
+\usepackage{array}      % para >{\raggedright}p{...}
+\usepackage{seqsplit}  % permite partir cadenas largas dentro de la tabla
+
+
+\usepackage[spanish]{babel}
+
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}
+}
+
+% Configura los márgenes
+\geometry{
+  left=2cm,   % Ajusta este valor al margen izquierdo deseado
+  right=2cm,  % Ajusta este valor al margen derecho deseado
+  top=3cm,
+  bottom=3cm,
+}
+
+% Configuración de los títulos de las secciones
+\titlespacing{\section}{0pt}{\parskip}{\parskip}
+\titlespacing{\subsection}{0pt}{\parskip}{\parskip}
+\titlespacing{\subsubsection}{0pt}{\parskip}{\parskip}
+
+% Redefinir el formato de los capítulos y añadir un punto después del número
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{0\p@} % Ajusta este valor para el espaciado deseado antes del título del capítulo
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \thechapter.\ % Añade un punto después del número
+    \fi
+    \interlinepenalty\@M
+    #1\par\nobreak
+    \vspace{10pt} % Ajusta este valor para el espacio deseado después del título del capítulo
+  }}
+\makeatother
+
+% Configura para que cada \chapter no comience en una pagina nueva
+\makeatletter
+\renewcommand\chapter{\@startsection{chapter}{0}{\z@}%
+    {-3.5ex \@plus -1ex \@minus -.2ex}%
+    {2.3ex \@plus.2ex}%
+    {\normalfont\Large\bfseries}}
+\makeatother
+
+% Configurar los colores para el código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Configurar el estilo para el código
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+% \renewcommand{\thechapter}{\alph{chapter}}
+
+%==============================================================================
+% Cosas para la documentación LateX
+% % Sangría
+% \setlength{\parindent}{1em}Texto
+
+% % Quitar sangría
+% \noindent
+
+% % Punto
+% \CIRCLE \ \ \textbf{Texto} \emph{algo}
+% \begin{itemize}
+%   \item \textbf{Negrita:} Texto
+%   \item \textbf{Negrita:} Texto
+% \end{itemize}
+
+% % Introducir código
+% \begin{center}
+%   \begin{BVerbatim}
+%     ... Código
+%   \end{BVerbatim}
+% \end{center}
+
+% Poner una imagen
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.55]{img/}
+%   \caption{Exportación de la base de datos en formato sql}
+%   \label{fig:exportación de la base de datos en formato sql}
+% \end{figure}
+
+% Poner dos imágenes
+% \begin{figure}[H]
+%   \begin{subfigure}{0.5\textwidth}
+%     \centering
+%     \includegraphics[scale=0.45]{img/}
+%     \caption{Texto imagen 1}
+%   \end{subfigure}%
+%   \begin{subfigure}{0.5\textwidth}
+%     \centering
+%     \includegraphics[scale=0.45]{img/}
+%     \caption{Texto imagen 2}
+%   \end{subfigure}
+%   \caption{Texto general}
+% \end{figure}
+
+% % Poner una tabla
+% \begin{table}[H]
+%   \centering
+%   \begin{tabular}{|c|c|c|c|}
+%     \hline
+%     \textbf{Campo 1} & \textbf{Campo 2} & \textbf{Campo 3} & \textbf{Campo 4} \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%   \end{tabular}
+%   \caption{Nombre de la tabla}
+%   \label{tab:nombre de la tabla}
+% \end{table}
+
+% % Poner codigo de un lenguaje a partir de un archivo
+% \lstset{style=mystyle}
+% The next code will be directly imported from a file
+% \lstinputlisting[language=Python]{code.py}
+
+% “Texto entre comillas dobles”
+
+%==============================================================================
+
+\begin{document}
+
+% Portada del informe
+\begin{titlepage}
+	\begin{center}
+		\includegraphics[scale=0.5]{img/logo.png}
+		\vspace{1cm}
+
+		\vspace{2cm}
+		\begin{Huge}
+			\textbf{Práctica 2: Análisis ético de la exposición IoT mediante Shodan}
+		\end{Huge}
+
+		\vspace{1cm}
+		\begin{large}
+			\textbf{Seguridad de las comunicaciones Inalambricas}
+		\end{large}
+
+		\vspace{4cm}
+		\begin{large}
+			\textbf{Autor:} Cheuk Kelly Ng Pante (alu0101364544@ull.edu.es)
+		\end{large}
+
+		\vspace{1cm}
+		\begin{large}
+			\textbf{Fecha:} \today
+		\end{large}
+	\end{center}
+\end{titlepage}
+
+\pagestyle{empty} % Desactiva la numeración de página para el índice
+
+% Índice
+\tableofcontents
+
+% Nueva página
+\cleardoublepage
+
+\pagestyle{plain} % Vuelve a activar la numeración de página
+\setcounter{page}{1} % Reinicia el contador de página a 1
+
+% Secciones del informe
+% Capitulo 1
+\chapter{Realizar la búsqueda referente al protocolo Modbus}
+Para este caso se va a usar \textbf{port:502 modbus} en el motor de búsqueda de Shodan.\\
+A continuación, se muestran algunos de los resultados obtenidos:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.33]{img/Screenshot_1.png}
+  \caption{Resultado de la búsqueda Modbus en Shodan}
+  \label{fig:resultado de la búsqueda Modbus en Shodan}
+\end{figure}
+
+Al seleccionar uno de los resultados, se puede observar la siguiente información:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.33]{img/Screenshot_2.png}
+  \caption{Información de un dispositivo Modbus}
+  \label{fig:información de un dispositivo Modbus}
+\end{figure}
+
+Y podemos ver que el puerto 80 está abierto, por lo que podemos intentar acceder a la interfaz web del dispositivo, viendo así una interfaz de login:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.33]{img/Screenshot_3.png}
+  \caption{Interfaz web de un dispositivo Modbus}
+  \label{fig:interfaz web de un dispositivo Modbus}
+\end{figure}
+
+La interfaz parece corresponder al panel de administración de un router o CPE (dispositivo de cliente provisto por un ISP), es decir, probablemente la interfaz web de gestión de un router doméstico.
+
+\chapter{Búsqueda de dispositivos en España que usen el puerrto 47808}
+Para este caso se va a usar \textbf{port:47808 country:ES} en el motor de búsqueda de Shodan.\\
+A continuación, se muestran algunos de los resultados obtenidos:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.33]{img/Screenshot_4.png}
+  \caption{Resultado de la búsqueda en España en Shodan}
+  \label{fig:resultado de la búsqueda en España en Shodan}
+\end{figure}
+
+Al seleccionar uno de los resultados, se puede observar la siguiente información:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.33]{img/Screenshot_5.png}
+  \caption{Información de un dispositivo en España}
+  \label{fig:información de un dispositivo en España}
+\end{figure}
+
+Para este caso, el puerto 80 también está abierto, por lo que podemos intentar acceder a la interfaz web del dispositivo, viendo así una interfaz de login de un servidor Apache ubicado en Madrid, España:
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.33]{img/Screenshot_6.png}
+  \caption{Interfaz web de un dispositivo en España}
+  \label{fig:interfaz web de un dispositivo en España}
+\end{figure}
+
+\chapter{Selección de 3 dispositivos y análisis de sus vulnerabilidades}
+\renewcommand{\arraystretch}{1.3}
+
+\noindent
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+    \hline
+    Descripción & \\
+    \hline
+    Parámetros de búsqueda & \\
+    \hline
+    \# de resultados & \\
+    \hline
+    Parámetros de acceso por defecto & \\
+    \hline
+\end{tabular}
+
+% \begin{center}
+%     \textit{\textcolor{magenta}{Hallazgos}}
+% \end{center}
+
+\noindent
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+    \hline
+    IP: & \\
+    \hline
+    Organización: & \\
+    \hline
+    Localización: & \\
+    \hline
+    Puerto: & \\
+    \hline
+    URL: & \\
+    \hline
+    Observación: & \\[2.5cm] % Espacio extra vertical
+    \hline
+    Evidencias: & \\[2.5cm] % Espacio extra vertical
+    \hline
+    Observación & \\[2.5cm] % Espacio extra vertical
+    \hline
+\end{tabular}
+
+\end{document}
