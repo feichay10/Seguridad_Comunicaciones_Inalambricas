@@ -1,0 +1,39 @@
+import shodan
+from time import sleep
+
+SHODAN_API_KEY = "I3UytL2PR0ksw8RYs5Q1RMGKWRECjMIG"
+api = shodan.Shodan(SHODAN_API_KEY)
+
+query = 'webcamxp'
+
+try:
+
+  # Step 2 - Search using Shodan API
+  results = api.search(query)
+  print('Total number of results : {}'.format(results['total']))
+
+  for result in results['matches']:
+
+    # Step 3 - Print IP and country for every obtained result
+    print('IP: {}'.format(result['ip_str']))  # The IP for each result is printed
+    print(result['data'])  # To print raw data for each result
+    host = api.host(result['ip_str'])
+    print(' - Country : {0}'.format(host.get('country_name', 'n/a')))
+    print('')
+    sleep(1)  # A 1-second delay is necessary to respect Shodan API restrictions
+
+    # Step 4 - For each device IP, vulnerabilities and exploits are listed
+    try:
+      if str(host.get('vulns')) != 'None':
+        print(' - - - - - - - - - - - - - - - - - - - - Exploit list - - - - - - - - - - - - - - - - - - - - ')
+        for vulnerability in host.get('vulns'):
+          exploits = api.exploits.search(vulnerability)
+          sleep(1)
+          print('Found {0} exploits for vulnerability "{1}"\n'.format(
+            exploits.get('total'), vulnerability))
+    except shodan.APIError as erro:
+      print('Error during exploit query : "{0}"'.format(query))
+      print('Shodan error : {0}'.format(erro))
+
+except shodan.APIError as e:
+  print('Error : {}'.format(e))

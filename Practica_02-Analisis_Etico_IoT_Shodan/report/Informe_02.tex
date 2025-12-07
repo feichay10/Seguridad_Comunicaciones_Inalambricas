@@ -230,7 +230,7 @@ Al seleccionar uno de los resultados, se puede observar la siguiente informació
 Y podemos ver que el puerto 80 está abierto, por lo que podemos intentar acceder a la interfaz web del dispositivo, viendo así una interfaz de login:
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.33]{img/Screenshot_3.png}
+  \includegraphics[scale=0.33]{img/Screenshot_3_2.png}
   \caption{Interfaz web de un dispositivo Modbus}
   \label{fig:interfaz web de un dispositivo Modbus}
 \end{figure}
@@ -266,42 +266,133 @@ Para este caso, el puerto 80 también está abierto, por lo que podemos intentar
 \chapter{Selección de 3 dispositivos y análisis de sus vulnerabilidades}
 \renewcommand{\arraystretch}{1.3}
 
+\paragraph{Dispositivos webcamxp}
+
+\noindent
+
+% --- Tabla resumen webcamxp ---
 \noindent
 \begin{tabular}{|p{4.5cm}|p{10cm}|}
     \hline
-    Descripción & \\
+    Descripción & Cámaras IP de videovigilancia gestionadas mediante el software \texttt{webcamxp}, accesibles a través de una interfaz web HTTP/HTTPS. \\
     \hline
-    Parámetros de búsqueda & \\
+    Parámetros de búsqueda & \texttt{webcamxp country:es} \\
     \hline
-    \# de resultados & \\
+    \# de resultados & \textit{5 resultados para \texttt{webcamxp country:es}} \\
     \hline
-    Parámetros de acceso por defecto & \\
+    Parámetros de acceso por defecto & Acceso a través de navegador web apuntando a la IP pública y puerto HTTP/HTTPS publicados; si el administrador no ha cambiado la configuración, el servicio puede estar expuesto con credenciales por defecto o incluso sin autenticación sólida. \\
     \hline
 \end{tabular}
 
-% \begin{center}
-%     \textit{\textcolor{magenta}{Hallazgos}}
-% \end{center}
+\vspace{0.4cm}
 
+% --- Tabla detalle host 81.22.234.236 ---
 \noindent
 \begin{tabular}{|p{4.5cm}|p{10cm}|}
     \hline
-    IP: & \\
+    IP: & 81.22.234.236 \\
     \hline
-    Organización: & \\
+    Organización: & AVATEL TELECOM, SA \\
     \hline
-    Localización: & \\
+    Localización: & Torrevieja, Spain \\
     \hline
-    Puerto: & \\
+    Puerto: & 80/tcp (redirección a HTTPS en el mismo host) \\
     \hline
-    URL: & \\
+    URL: & \texttt{http://81.22.234.236/} $\rightarrow$ redirige a \texttt{https://81.22.234.236/} \\
     \hline
-    Observación: & \\[2.5cm] % Espacio extra vertical
+    Observación: & El servicio en el puerto 80 responde con un código HTTP 308 Permanent Redirect hacia HTTPS y usa el servidor web Caddy; el dispositivo está etiquetado como IoT y presenta múltiples puertos abiertos, lo que indica un sistema de videovigilancia o pasarela expuesta directamente a Internet. \\[2.5cm]
     \hline
-    Evidencias: & \\[2.5cm] % Espacio extra vertical
+    Evidencias: & Captura de pantalla del panel de Shodan donde se observa la IP 81.22.234.236, la organización AVATEL TELECOM, SA, la localización en Torrevieja (Spain), la lista de puertos abiertos (80, 82, 83, 84, 85, 88, 89, 90, 91, 92, 94, 97, 98, 100, 106, 111, 554) y el banner HTTP del puerto 80 con respuesta 308 y servidor Caddy. \\[2.5cm]
     \hline
-    Observación & \\[2.5cm] % Espacio extra vertical
+    Observación & Desde el punto de vista de seguridad, la exposición de un sistema IoT con numerosos puertos abiertos y acceso web directo desde Internet incrementa la superficie de ataque; si además el servicio corresponde a un servidor de cámaras webcamxp, un atacante podría intentar localizar credenciales débiles para acceder a las imágenes de videovigilancia o a la consola de administración. \\[2.5cm]
     \hline
 \end{tabular}
+
+\paragraph{ExacqVision}
+
+\noindent
+
+% --- Tabla resumen ExacqVision ---
+\noindent
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+    \hline
+    Descripción & Sistemas de videovigilancia/NVR corporativos \texttt{ExacqVision}, utilizados para la grabación y gestión centralizada de cámaras IP a través de servicios web y acceso remoto. \\
+    \hline
+    Parámetros de búsqueda & \texttt{ExacqVision} \\
+    \hline
+    \# de resultados & \textit{4 resultados para \texttt{ExacqVision}} \\
+    \hline
+    Parámetros de acceso por defecto & Acceso mediante servicios expuestos en Internet, típicamente un servidor web IIS en el puerto 80/tcp y acceso remoto al servidor Windows mediante RDP en el puerto 3389/tcp, donde se aloja el software de videovigilancia ExacqVision. \\
+    \hline
+\end{tabular}
+
+\vspace{0.4cm}
+
+% --- Tabla detalle host 13.91.106.128 ---
+\noindent
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+    \hline
+    IP: & 13.91.106.128 \\
+    \hline
+    Organización: & Microsoft Corporation (AzureCloud) \\
+    \hline
+    Localización: & San Jose, United States (región WestUS de Azure) \\
+    \hline
+    Puerto: & 80/tcp (Microsoft IIS) y 3389/tcp (Remote Desktop Protocol) \\
+    \hline
+    URL: & \texttt{http://13.91.106.128/} (servidor web IIS sobre Windows Server 2012 R2; error 500 según el banner) \\
+    \hline
+    Observación: & El host es una máquina virtual en Azure con sistema operativo Windows Server 2012 R2 que ejecuta IIS en el puerto 80/tcp y expone RDP en el puerto 3389/tcp; el banner de RDP identifica el dominio y nombre de equipo \texttt{EXACQVISION}, lo que indica que se trata de un servidor asociado a la plataforma de videovigilancia ExacqVision. \\[2.5cm]
+    \hline
+    Evidencias: & Captura de pantalla de Shodan donde se observa la IP 13.91.106.128, la organización Microsoft Corporation (AzureCloud), la información de sistema operativo Windows Server 2012 R2, el servicio Microsoft IIS httpd en el puerto 80/tcp con código 500 Internal Server Error y el banner RDP del puerto 3389/tcp mostrando el nombre de host y dominio relacionados con ExacqVision. \\[2.5cm]
+    \hline
+    Observación & Desde el punto de vista de seguridad, el servidor de videovigilancia está expuesto a Internet con RDP abierto y con un sistema operativo antiguo (Windows Server 2012 R2), lo que incrementa la superficie de ataque; un atacante podría intentar explotación de vulnerabilidades de RDP o IIS, así como ataques de fuerza bruta sobre credenciales de acceso remoto para comprometer la infraestructura de videovigilancia. \\[2.5cm]
+    \hline
+\end{tabular}
+
+\newpage
+
+\paragraph{JUNG KNX}
+
+\noindent
+
+% --- Tabla resumen JUNG KNX ---
+\noindent
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+    \hline
+    Descripción & Pasarela/dispositivo de automatización de edificios basado en tecnología \texttt{JUNG KNX}, que actúa como KNX/IP Router para integrar el bus KNX con redes IP y permitir el control remoto de funciones domóticas (iluminación, clima, etc.). \\
+    \hline
+    Parámetros de búsqueda & \texttt{"JUNG" "KNX"} \quad (por ejemplo, filtrando dispositivos cuyo banner del puerto 3671/UDP se identifica como \texttt{IP Router JUNG}). \\
+    \hline
+    \# de resultados & \textit{4 resultados para \texttt{JUNG KNX}} \\
+    \hline
+    Parámetros de acceso por defecto & Acceso KNXnet/IP en puerto 3671/UDP e interfaz web en puertos HTTP (8080/tcp); autenticación básica con credenciales por defecto permite gestionar automatización desde Internet. \\
+    \hline
+\end{tabular}
+
+\vspace{0.4cm}
+
+% --- Tabla detalle host 88.19.44.142 ---
+\noindent
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+    \hline
+    IP: & 88.19.44.142 \\
+    \hline
+    Organización: & Telefonica de Espana SAU Red de servicios IP Spain \\
+    \hline
+    Localización: & Madrid, Spain \\
+    \hline
+    Puerto: & 3671/UDP (KNX Gateway), 8080/tcp, 8081/tcp, 8083/tcp, 8123/tcp \\
+    \hline
+    URL: & \texttt{http://88.19.44.142:8080/} (servidor \texttt{thttpd/2.19}; responde \texttt{401 Unauthorized} con autenticación básica “MOBOTIX Camera User”). \\
+    \hline
+    Observación: & El puerto 3671/UDP se identifica como \texttt{KNX Gateway} con nombre de dispositivo \texttt{IP Router JUNG}; el banner muestra información de Siemens AG y servicios soportados, confirmando que es una pasarela KNX/IP JUNG en un entorno de automatización. \\[2.5cm]
+    \hline
+    Evidencias: & Captura de Shodan donde se observa el dominio \texttt{rima-tde.net}, el servidor web \texttt{thttpd} en los puertos 8080/8081/8083/8123, el error HTTP 401 Unauthorized con cabecera \texttt{WWW-Authenticate: Basic realm="MOBOTIX Camera User"}, así como el banner detallado del puerto 3671/UDP describiendo el dispositivo como \texttt{KNX Gateway} y \texttt{IP Router JUNG}. \\[2.5cm]
+    \hline
+    Observación & La exposición de una pasarela KNX/IP a Internet con autenticación básica puede permitir a un atacante acceder al sistema de cámaras y automatización, especialmente si las credenciales son débiles o por defecto. \\[2.5cm]
+    \hline
+\end{tabular}
+
 
 \end{document}
