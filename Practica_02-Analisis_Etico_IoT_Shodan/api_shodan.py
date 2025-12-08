@@ -1,7 +1,7 @@
 import shodan
 from time import sleep
 
-SHODAN_API_KEY = "I3UytL2PR0ksw8RYs5Q1RMGKWRECjMIG"
+SHODAN_API_KEY = ""
 api = shodan.Shodan(SHODAN_API_KEY)
 
 query = 'webcamxp'

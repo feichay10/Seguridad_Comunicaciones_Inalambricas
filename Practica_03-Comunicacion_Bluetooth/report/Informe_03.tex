@@ -1,0 +1,355 @@
+\documentclass[11pt]{report}
+
+% Paquetes y configuraciones adicionales
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{wasysym}
+\usepackage{tikzsymbols}
+\usepackage{fancyvrb}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}   % en el preámbulo
+\usepackage{array}      % para >{\raggedright}p{...}
+\usepackage{seqsplit}  % permite partir cadenas largas dentro de la tabla
+
+
+\usepackage[spanish]{babel}
+
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}
+}
+
+% Configura los márgenes
+\geometry{
+  left=2cm,   % Ajusta este valor al margen izquierdo deseado
+  right=2cm,  % Ajusta este valor al margen derecho deseado
+  top=3cm,
+  bottom=3cm,
+}
+
+% Configuración de los títulos de las secciones
+\titlespacing{\section}{0pt}{\parskip}{\parskip}
+\titlespacing{\subsection}{0pt}{\parskip}{\parskip}
+\titlespacing{\subsubsection}{0pt}{\parskip}{\parskip}
+
+% Redefinir el formato de los capítulos y añadir un punto después del número
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{0\p@} % Ajusta este valor para el espaciado deseado antes del título del capítulo
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \thechapter.\ % Añade un punto después del número
+    \fi
+    \interlinepenalty\@M
+    #1\par\nobreak
+    \vspace{10pt} % Ajusta este valor para el espacio deseado después del título del capítulo
+  }}
+\makeatother
+
+% Configura para que cada \chapter no comience en una pagina nueva
+\makeatletter
+\renewcommand\chapter{\@startsection{chapter}{0}{\z@}%
+    {-3.5ex \@plus -1ex \@minus -.2ex}%
+    {2.3ex \@plus.2ex}%
+    {\normalfont\Large\bfseries}}
+\makeatother
+
+% Configurar los colores para el código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Configurar el estilo para el código
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+% \renewcommand{\thechapter}{\alph{chapter}}
+
+%==============================================================================
+% Cosas para la documentación LateX
+% % Sangría
+% \setlength{\parindent}{1em}Texto
+
+% % Quitar sangría
+% \noindent
+
+% % Punto
+% \CIRCLE \ \ \textbf{Texto} \emph{algo}
+% \begin{itemize}
+%   \item \textbf{Negrita:} Texto
+%   \item \textbf{Negrita:} Texto
+% \end{itemize}
+
+% % Introducir código
+% \begin{center}
+%   \begin{BVerbatim}
+%     ... Código
+%   \end{BVerbatim}
+% \end{center}
+
+% Poner una imagen
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[scale=0.55]{img/}
+%   \caption{Exportación de la base de datos en formato sql}
+%   \label{fig:exportación de la base de datos en formato sql}
+% \end{figure}
+
+% Poner dos imágenes
+% \begin{figure}[H]
+%   \begin{subfigure}{0.5\textwidth}
+%     \centering
+%     \includegraphics[scale=0.45]{img/}
+%     \caption{Texto imagen 1}
+%   \end{subfigure}%
+%   \begin{subfigure}{0.5\textwidth}
+%     \centering
+%     \includegraphics[scale=0.45]{img/}
+%     \caption{Texto imagen 2}
+%   \end{subfigure}
+%   \caption{Texto general}
+% \end{figure}
+
+% % Poner una tabla
+% \begin{table}[H]
+%   \centering
+%   \begin{tabular}{|c|c|c|c|}
+%     \hline
+%     \textbf{Campo 1} & \textbf{Campo 2} & \textbf{Campo 3} & \textbf{Campo 4} \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%     Texto & Texto & Texto & Texto \\ \hline
+%   \end{tabular}
+%   \caption{Nombre de la tabla}
+%   \label{tab:nombre de la tabla}
+% \end{table}
+
+% % Poner codigo de un lenguaje a partir de un archivo
+% \lstset{style=mystyle}
+% The next code will be directly imported from a file
+% \lstinputlisting[language=Python]{code.py}
+
+% “Texto entre comillas dobles”
+
+%==============================================================================
+
+\begin{document}
+
+% Portada del informe
+\begin{titlepage}
+	\begin{center}
+		\includegraphics[scale=0.5]{img/logo.png}
+		\vspace{1cm}
+
+		\vspace{2cm}
+		\begin{Huge}
+			\textbf{Práctica 3: Comunicación Bluetooth}
+		\end{Huge}
+
+		\vspace{1cm}
+		\begin{large}
+			\textbf{Seguridad de las comunicaciones Inalambricas}
+		\end{large}
+
+		\vspace{4cm}
+		\begin{large}
+			\textbf{Autor:} Cheuk Kelly Ng Pante (alu0101364544@ull.edu.es)
+		\end{large}
+
+		\vspace{1cm}
+		\begin{large}
+			\textbf{Fecha:} \today
+		\end{large}
+	\end{center}
+\end{titlepage}
+
+\pagestyle{empty} % Desactiva la numeración de página para el índice
+
+% Índice
+\tableofcontents
+
+% Nueva página
+\cleardoublepage
+
+\pagestyle{plain} % Vuelve a activar la numeración de página
+\setcounter{page}{1} % Reinicia el contador de página a 1
+
+% Secciones del informe
+% Capitulo 1
+\chapter{Comprobar si hay un adaptador de Bluetooth activo}
+Para comprobar si hay un adaptador de Bluetooth activo en el sistema, se puede utilizar el comando \texttt{hciconfig} en la terminal de Linux. Este comando muestra información sobre los dispositivos Bluetooth disponibles en el sistema. 
+En la Figura \ref{fig:hciconfig} se muestra un ejemplo de la salida del comando \texttt{hciconfig}, donde se puede observar que hay un adaptador de Bluetooth activo (hci0) con su dirección MAC y estado.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{img/Screenshot_1.png}
+  \caption{Salida del comando \texttt{hciconfig}}
+  \label{fig:hciconfig}
+\end{figure}
+
+En este caso aparece el adaptador como \texttt{DOWN}, lo que indica que el adaptador está desactivado. Para activarlo, se puede utilizar el comando \texttt{sudo hciconfig hci0 up}, donde \texttt{hci0} es el nombre del adaptador de Bluetooth.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{img/Screenshot_2.png}
+  \caption{Activación del adaptador de Bluetooth}
+  \label{fig:activacion_hciconfig}
+\end{figure}
+
+\chapter{Herramientas de Bluez: bluetoothctl}
+La herramienta \texttt{bluetoothctl} es una utilidad de línea de comandos que forma parte del paquete BlueZ, el cual es la pila oficial de protocolos Bluetooth para Linux. Esta herramienta permite gestionar dispositivos Bluetooth, incluyendo la búsqueda, emparejamiento y conexión a dispositivos.
+
+Para iniciar \texttt{bluetoothctl}, simplemente se debe abrir una terminal y escribir el comando \texttt{bluetoothctl}. Una vez dentro de la herramienta, se pueden utilizar varios comandos para interactuar con los dispositivos Bluetooth. Algunos de los comandos más comunes son:
+\begin{itemize}
+  \item \texttt{power on/off}: Activa o desactiva el adaptador de Bluetooth.
+  \item \texttt{scan on/off}: Inicia o detiene la búsqueda de dispositivos Bluetooth cercanos.
+  \item \texttt{devices}: Muestra una lista de dispositivos Bluetooth conocidos.
+  \item \texttt{connect <MAC>}: Conecta a un dispositivo Bluetooth emparejado.
+  \item \texttt{disconnect <MAC>}: Desconecta de un dispositivo Bluetooth.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{img/Screenshot_3.png}
+  \caption{Uso de la herramienta \texttt{bluetoothctl}}
+  \label{fig:bluetoothctl}
+\end{figure}
+
+En la Figura~\ref{fig:scan_bluetoothctl} se muestra un ejemplo de cómo utilizar el comando \texttt{scan on} para buscar dispositivos Bluetooth cercanos. La salida muestra varios dispositivos encontrados, junto con sus direcciones MAC y nombres (si están disponibles).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_6.png}
+  \caption{Escaneo de dispositivos Bluetooth con \texttt{bluetoothctl}}
+  \label{fig:scan_bluetoothctl}
+\end{figure}
+
+Una vez escaneado se para el escaneo con el comando \texttt{scan off}. Luego, se lista los dispositivos encontrados con el comando \texttt{devices}, como se muestra en la Figura~\ref{fig:devices_bluetoothctl}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{img/Screenshot_7.png}
+  \caption{Listado de dispositivos Bluetooth con \texttt{bluetoothctl}}
+  \label{fig:devices_bluetoothctl}
+\end{figure}
+
+Una vez que se tiene la dirección MAC del dispositivo al que se desea conectar, se puede utilizar el comando \texttt{connect <MAC>} para establecer la conexión. En la Figura~\ref{fig:connect_bluetoothctl} se muestra un ejemplo de cómo conectar a un dispositivo Bluetooth utilizando su dirección MAC.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{img/Screenshot_8.png}
+  \caption{Conexión a un dispositivo Bluetooth con \texttt{bluetoothctl}}
+  \label{fig:connect_bluetoothctl}
+\end{figure}
+
+Ya conectado, se puede entrar al menú de servicios del dispositivo con el comando \texttt{menu gatt}, como se muestra en la Figura~\ref{fig:menu_gatt_bluetoothctl}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{img/Screenshot_9.png}
+  \caption{Menú GATT en \texttt{bluetoothctl}}
+  \label{fig:menu_gatt_bluetoothctl}
+\end{figure}
+
+Y se puede listar los servicios disponibles con el comando \texttt{list-attributes}, como se muestra en la Figura~\ref{fig:list_attributes_bluetoothctl} aunque en este caso no hay servicios disponibles.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{img/Screenshot_10_1.png}
+  \caption{Listado de atributos en \texttt{bluetoothctl}}
+  \label{fig:list_attributes_bluetoothctl}
+\end{figure}
+
+Se ha probado con varios dispositivos Bluetooth, pero no se han encontrado servicios disponibles para explorar. En la Figura~\ref{fig:list_attributes_bluetoothctl_2} se muestra otro intento con un dispositivo diferente, pero nuevamente no se encontraron servicios disponibles.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.7]{img/Screenshot_10_2.png}
+  \caption{Otro intento de listado de atributos en \texttt{bluetoothctl}}
+  \label{fig:list_attributes_bluetoothctl_2}
+\end{figure}
+
+\chapter{Trabajando con Apps (nRF Connect)}
+
+Durante esta práctica se ha utilizado la aplicación nRF Connect para analizar el comportamiento de distintos dispositivos Bluetooth Low Energy (BLE) cercanos, centrándose finalmente en los auriculares \texttt{LE\_LinkBuds S}. En la vista de escaneo se identificaron varios dispositivos (teléfonos, periféricos de Logitech y otros anunciados como \texttt{N/A}), observándose sus niveles de señal (RSSI) y comprobando cuáles eran conectables. En el caso concreto de \texttt{LE\_LinkBuds S}, el RSSI se mantuvo alrededor de \(-55\)~dBm, lo que indica una proximidad física relativamente cercana y una conexión estable, como se aprecia en la gráfica temporal de la señal.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.13]{img/Screenshot_14.jpeg}
+  \caption{Gráfica de RSSI en nRF Connect para varios dispositivos BLE, destacando \texttt{LE\_LinkBuds S}.}
+  \label{fig:rssi-graph}
+\end{figure}
+
+Una vez establecida la conexión con \texttt{LE\_LinkBuds S}, se procedió a la exploración de la información que ofrece la aplicación sobre el dispositivo. En la ficha del dispositivo se muestra que es conectable, se identifica como tipo \textit{Google} y anuncia, entre otros, un servicio con UUID corto \texttt{FE03}, además del nivel de señal y la latencia de los paquetes. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.15]{img/Screenshot_12.jpeg}
+  \caption{Detalle del dispositivo \texttt{LE\_LinkBuds S}: estado de conexión, tipo de dispositivo, servicios anunciados y RSSI.}
+  \label{fig:device-card}
+\end{figure}
+
+En la pestaña de \textit{Attribute Table} del servidor GATT de nRF Connect se observa que, en esta sesión, el dispositivo móvil no está suscrito a ninguna característica del servidor, por lo que no se reciben notificaciones ni indicaciones automáticas desde la app actuando como periférico. Esta vista resulta útil para comprobar de un vistazo si existen suscripciones activas o si todas las operaciones se realizan únicamente mediante lecturas y escrituras explícitas. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.15]{img/Screenshot_13.jpeg}
+  \caption{Vista del servidor GATT en nRF Connect iOS indicando que no hay características suscritas.}
+  \label{fig:attr-table-empty}
+\end{figure}
+
+Por otro lado, al inspeccionar la información del dispositivo remoto en nRF Connect se observa, en primer lugar, la sección \emph{Advertised Services}, donde el auricular anuncia un servicio con UUID corto \texttt{FE03} junto con los servicios genéricos estándar \texttt{Generic Access} (UUID 0x1800) y \texttt{Generic Attribute} (UUID 0x1801). A continuación, en la tabla de atributos GATT que se obtiene tras la conexión, aparecen varios servicios propietarios con UUIDs de 128 bits etiquetados como \emph{Unknown Service}, cada uno de ellos con características asociadas (\emph{Unknown Characteristic}) sobre las que es posible consultar propiedades como \texttt{Read}, \texttt{Write} o \texttt{Notify} para inferir su posible función, aun sin documentación pública específica.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.15]{img/Screenshot_11.jpeg}
+  \caption{Sección \emph{Advertised Services} y tabla de servicios GATT del dispositivo \texttt{LE\_LinkBuds S} en nRF Connect.}
+  \label{fig:gatt-table}
+\end{figure}
+
+En varias de estas características se probaron operaciones de lectura y escritura, utilizando los parsers de datos de nRF Connect (hexadecimal, enteros con signo y sin signo, booleanos y texto UTF-8) para interpretar los valores intercambiados. Algunas características se mapearon a plantillas internas de la aplicación, como \emph{Heart Rate Sensor Location} o \emph{LED and Button State}, lo que permite representar el mismo dato de distintas formas sin modificar el valor almacenado y facilita la comprensión práctica del modelo GATT basado en servicios y características.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.15]{img/Screenshot_15.jpeg}
+  \caption{Selección de distintos parsers de datos para interpretar el valor de una característica GATT en nRF Connect.}
+  \label{fig:data-parser}
+\end{figure}
+
+
+
+
+\end{document}
